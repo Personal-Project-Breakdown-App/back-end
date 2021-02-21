@@ -10,5 +10,13 @@ your file is getting way too big, bring a Router and make it thin, don't worry, 
 there is no data on that route, just write some code, you'll sort it out… don't worry, just hack it…
 I need this code, but don't know where, perhaps should make some middleware, don't worry, just hack it
 
-Go code!
+Go code! 😂😂😂
 */
+
+const server = require("./api/server");
+
+const port = process.env.PORT || 4000;
+
+server.listen(port, () => {
+  console.log(`Server is running. http://localhost:${port}`);
+});
