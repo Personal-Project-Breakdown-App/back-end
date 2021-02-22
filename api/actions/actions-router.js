@@ -8,7 +8,6 @@ const {
   checkActionInput,
   checkProjectID,
 } = require("../middleware/middleware");
-const { getProjectActions } = require("../projects/projects-model");
 
 // Insomnia Checking either ✅ or ⛔ | [method passes] [method error passes]
 // [GET] /api/actions ✅[n/a]
