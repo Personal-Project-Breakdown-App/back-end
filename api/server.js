@@ -8,7 +8,7 @@ server.use(projectsRouter);
 server.use(actionsRouter);
 // eslint-disable-next-line no-unused-vars
 server.use((err, req, res) => {
-  console.log(err);
+  //console.log(err);
   req.status(500).json({
     message: "Something went wrong, server error. Please try again.",
   });

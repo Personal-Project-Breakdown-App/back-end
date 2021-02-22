@@ -26,7 +26,7 @@ router.post("/api/actions", checkActionInput(), async (req, res, next) => {
   }
 });
 
-// [PUT] /api/actions/:id
+// [PUT] /api/actions/:id ✅✅
 router.put(
   "/api/actions/:id",
   checkActionInput(),
@@ -38,12 +38,12 @@ router.put(
         res.status(200).json(action.body);
       })
       .catch((err) => {
-          next(err);
+        next(err);
       });
   }
 );
 
-// [DELETE] /api/actions/:id
+// [DELETE] /api/actions/:id ✅✅
 router.delete("/api/actions/:id", checkActionID(), (req, res, next) => {
   model
     .remove(req.params.id)
