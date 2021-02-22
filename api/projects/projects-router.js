@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const model = require('./projects-model')
-const { checkProjectID, checkBodyInput } = require('../middleware/middleware')
+const { checkProjectID, checkProjectInput } = require('../middleware/middleware')
 
 // [GET] /api/projects
 // [GET] /api/projects/:id

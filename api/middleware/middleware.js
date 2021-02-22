@@ -2,23 +2,14 @@
 const actionsModel = require("../actions/actions-model");
 const projectsModel = require("../projects/projects-model");
 
-//LOGGER for new requests ---
-function logger() {
-  return (req, res, next) => {
-    const time = new Date().toISOString();
-    console.log(`${time}: ${req.method} --- ${req.url}`);
-    next();
-  };
-}
-
 // ACTIONS ROUTER MIDDLEWARE ---
 function checkActionID() {
   return (req, res, next) => {
     actionsModel
       .get(req.params.id)
-      .then((res) => {
-        if (res) {
-          req.action = res;
+      .then((action) => {
+        if (action) {
+          req.action = action;
           next();
         } else {
           res
@@ -27,24 +18,30 @@ function checkActionID() {
         }
       })
       //moves to catch all 500 middleware coded on main server.js.
-      .catch(() => next());
+      .catch((err) => next(err));
   };
 }
 
 function checkActionInput() {
   return (req, res, next) => {
     if (!req.body) {
-      return res.status(400).json({ message: "Body needed" });
-    }
-    if (!res.body.description) {
-      return res
+      res.status(400).json({ message: "Body needed" });
+    } else if (
+      !req.body.project_id ||
+      !req.body.description ||
+      !req.body.notes ||
+      !req.body.completed
+    ) {
+      res
         .status(400)
-        .json({ message: "description variable needed in body" });
+        .json({
+          message:
+            "project_id, description, notes, and completed variables needed in body",
+        });
+    } else {
+      req.newAction = req.body;
+      next();
     }
-    if (!req.body.name) {
-      return res.status(400).json({ message: "notes variable needed in body" });
-    }
-    next();
   };
 }
 
@@ -84,12 +81,11 @@ function checkProjectInput() {
               .json({ message: "ID is not used. Choose another ID." });
       })
       //moves to catch all 500 middleware coded on main server.js.
-      .catch(() => next());
+      .catch((err) => next(err));
   };
 }
 
 module.exports = {
-  logger,
   checkActionID,
   checkProjectID,
   checkActionInput,
