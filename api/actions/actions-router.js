@@ -30,16 +30,14 @@ router.post("/api/actions", checkActionInput(), async (req, res, next) => {
 router.put(
   "/api/actions/:id",
   checkActionInput(),
-  checkActionID(),
-  (req, res, next) => {
-    model
-      .update(req.params.id, req.body)
-      .then((action) => {
-        res.status(200).json(action.body);
-      })
-      .catch((err) => {
-        next(err);
-      });
+  checkActionID(), 
+  async (req, res, next) => {
+    try {
+      const action = await model.update(req.params.id, req.body)
+      res.status(200).json(action)
+    } catch {
+      next()
+    }
   }
 );
 
