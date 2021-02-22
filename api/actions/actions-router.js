@@ -3,11 +3,7 @@ const router = express.Router();
 const model = require("./actions-model");
 //middleware for validating the action ID and input form for POST and PUT
 //500 error codes middleware on main server.js - next()
-const {
-  checkActionID,
-  checkActionInput,
-  checkProjectID,
-} = require("../middleware/middleware");
+const { checkActionID, checkActionInput } = require("../middleware/middleware");
 
 // Insomnia Checking either ✅ or ⛔ | [method passes] [method error passes]
 // [GET] /api/actions ✅[n/a]
@@ -20,7 +16,7 @@ router.get("/api/actions/:id", checkActionID(), (req, res) => {
   res.json(req.action);
 });
 
-// [POST] /api/actions ⛔✅
+// [POST] /api/actions ✅✅
 router.post("/api/actions", checkActionInput(), async (req, res, next) => {
   try {
     await model.insert(req.body);
@@ -32,26 +28,37 @@ router.post("/api/actions", checkActionInput(), async (req, res, next) => {
 
 // [PUT] /api/actions/:id
 router.put(
-  "api/actions/:id",
+  "/api/actions/:id",
   checkActionInput(),
-  checkProjectID(),
-  async (req, res, next) => {
-    try {
-      await model.update(req.action.id, req.changes);
-      res.status(202).send(req.changes);
-    } catch {
-      next();
-    }
+  checkActionID(),
+  (req, res, next) => {
+    model
+      .update(req.params.id, req.body)
+      .then((action) => {
+        res.status(200).json(action.body);
+      })
+      .catch((err) => {
+          next(err);
+      });
   }
 );
 
 // [DELETE] /api/actions/:id
-router.delete("api/actions/:id", checkActionID(), async (req, res, next) => {
-  try {
-    await model.remove(req.action.id);
-  } catch {
-    next();
-  }
+router.delete("/api/actions/:id", checkActionID(), (req, res, next) => {
+  model
+    .remove(req.params.id)
+    .then((count) => {
+      if (count > 0) {
+        res.status(200).json({
+          message: "This action has been deleted",
+        });
+      } else {
+        res.status(404).json({ message: "This action could not be deleted." });
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 module.exports = router;

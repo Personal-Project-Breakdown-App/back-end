@@ -5,7 +5,6 @@ const {
   checkProjectID,
   checkProjectInput,
 } = require("../middleware/middleware");
-const actions = require("../actions/actions-model")
 
 // [GET] /api/projects
 router.get("/api/projects", async (req, res) => {
@@ -53,7 +52,7 @@ router.delete("/api/projects/:id", checkProjectID(), async (req, res, next) => {
 })
 
 // [GET] /api/projects/:id/actions [array of actions (or empty array) as the body of the response]
-router.get("api/projects/:id/actions", checkProjectID(), async (req, res, next) => {
+router.get("/api/projects/:id/actions", checkProjectID(), async (req, res, next) => {
     try {
         await model.getProjectActions(req.params.id)
 

@@ -5,13 +5,16 @@ const projectsModel = require("../projects/projects-model");
 // ACTIONS ROUTER MIDDLEWARE ---
 function checkActionID() {
   return (req, res, next) => {
+    //console.log("checkingAction middleware activated")
     actionsModel
       .get(req.params.id)
       .then((action) => {
         if (action) {
+          //console.log("Middleware working")
           req.action = action;
           next();
         } else {
+          //console.log("Middleware 404")
           res
             .status(404)
             .json({ message: "ID is not used. Choose another ID." });
@@ -25,23 +28,19 @@ function checkActionID() {
 function checkActionInput() {
   return (req, res, next) => {
     if (!req.body) {
-      res.status(400).json({ message: "Body needed" });
+      return (
+      res.status(400).json({ message: "Body needed" }));
     } else if (
       !req.body.project_id ||
       !req.body.description ||
-      !req.body.notes ||
-      !req.body.completed
+      !req.body.notes
     ) {
-      res
-        .status(400)
-        .json({
-          message:
-            "project_id, description, notes, and completed variables needed in body",
-        });
-    } else {
-      req.newAction = req.body;
-      next();
+      return res.status(400).json({
+        message:
+          "project_id, description, and notes variables needed in body for posting",
+      });
     }
+    next();
   };
 }
 
